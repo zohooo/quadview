@@ -18,6 +18,17 @@ ID = { }
 -- Create main frame and bitmap controls
 -----------------------------------------------------------
 
+sep = package.config:sub(1,1) -- path separator
+
+mainpath = wx.wxGetCwd()
+datapath = os.getenv("APPDATA") .. sep .. "QuadView"
+
+runname = datapath .. sep .. "running"
+
+local file = wx.wxFile()
+file:Create(runname, true)
+file:Close()
+
 frame = wx.wxFrame(wx.NULL, wx.wxID_ANY, "QuadView", wx.wxDefaultPosition,
                    wx.wxSize(350, 250), wx.wxDEFAULT_FRAME_STYLE+wx.wxSTAY_ON_TOP)
 
@@ -28,6 +39,9 @@ preview = wx.wxStaticBitmap(frame, wx.wxID_ANY)
 frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
     image:delete()
     bitmap:delete()
+    if not wx.wxRemoveFile(runname) then
+        wx.wxMessageBox("Unable to delete file!", "Error", wx.wxOK + wx.wxCENTRE, frame)
+    end
     event:Skip()
 end)
 
@@ -122,11 +136,6 @@ frame:Connect(ID.TIMER_EXECUTION, wx.wxEVT_TIMER, ReadStream)
 
 ID.TIMER_PREVIEW = NewID()
 local previewTimer = wx.wxTimer(frame, ID.TIMER_PREVIEW)
-
-sep = package.config:sub(1,1) -- path separator
-
-mainpath = wx.wxGetCwd()
-datapath = os.getenv("APPDATA") .. sep .. "QuadView"
 
 dirname = datapath .. sep .. "directory.txt"
 texname = datapath .. sep .. "fragment.tex"
