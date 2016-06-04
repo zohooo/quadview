@@ -14,4 +14,8 @@ Assign("quadview-preview", >
   "\makeatother">
 );
 
-SetEventTimer(1, 10, "Exe('%b\Plugins\QuadView\fragment.edt')");
+Assign("quadview", "%b\Plugins\QuadView");
+
+SetEventTimer(1, 10, "Exe('%$(|quadview|);\fragment.edt')");
+
+Run('"%$(|quadview|);\wlua52.exe" "%$(|quadview|);\quadview.lua"', '%$(|quadview|)');
