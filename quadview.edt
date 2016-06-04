@@ -1,0 +1,6 @@
+﻿
+CreateFolders("%@('APPDATA');\QuadView",0);
+
+//Exe("%b\Exec\fragment.edt");
+
+SetEventTimer(1, 10, "Exe('%b\Plugins\QuadView\fragment.edt')");

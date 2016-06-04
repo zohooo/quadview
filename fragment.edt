@@ -1,0 +1,72 @@
+﻿// Save current paragraph in current TeX Document.
+
+  Requires(20110504);
+
+  PushTagsandRegisters;
+
+:Prepare:: ==========================================================
+
+  IfisMode("TeX","%!m","","JMP('Exit')");
+
+  OpenOutput("%@('APPDATA');\QuadView\directory.txt",0,0,0,"%F");
+  WrL("%P");
+  CloseOutput;
+
+:Locate:: ===========================================================
+
+  SaveFind;
+  SetRegEx(1);
+  SetFindStr("<>");
+  SetFindinFilesCurrent(1);
+  SearchReset;
+  FindInFiles;
+  RestoreFind;
+  SetTracking(0);
+  SetWrap(-1);
+  FindNext(-4,-1);
+  Loop(!|>
+    GetFindItem(3,3);>
+    IfOK(!'>
+      IfNum(%!3+1,%!l,"<=",!"LetRegNum(4,%!3+1);","LetRegNum(5,%!3+1);Stop;");>
+    ','Stop;');>
+    FindNext(1,-1);|);
+  //Prompt("%!l  %!4-%!5");
+  LetReg(9,"");
+  Loop(!|>
+    IfNum(%!4,%!5,'<=',!'GetLine(3,%!5);InsertByIndex(9,"%!9","%!3%\");LetRegNum(5,%!5-1);'>
+    ,'Stop');>
+  |);
+  //Prompt("%!9");
+  RestoreWrap;
+  SetTracking(1);
+
+:Start:: ============================================================
+
+  // Create Temporary File using the same (unicode) format as the Main File %F...
+  OpenOutput("%@('APPDATA');\QuadView\fragment.tex",0,0,0,"%F");
+  WrL("%% -*- Mode: TeX -*-");
+  Translate(2,"%!m","%!9",9);            // Translate Output?
+  FindInString("%!9",!"<\\begin\{document\}",1,1,11);
+  IfOK("JMP('Preamble_OK');");           // Main File already contains \begin{document}
+  GetPreamble("\begin{document}",8);     // Get Preamble in Register 8
+  // Default Preamble (if necessary add more packages terminated with %\>):
+  IfOK(!'Relax;',!|LetReg(8,>
+    !'\documentclass{article}%\'+>
+    !'\usepackage{amsmath}%\'+>
+  );|);
+  Translate(2,"%!M","%!8",8);            // Translate Output?
+  WrL("%!8");                            // Write String
+  WrL("\begin{document}");               // LaTeX begin...
+  WrL;                                   // Empty Line (just in case)
+
+:Preamble_OK:: ======================================================
+
+  WrL("%!9");                            // Write String
+  WrL;                                   // Empty Line (just in case)
+  WrL("\end{document}");                 // LaTeX end...
+  CloseOutput;                           // Close temporary file
+
+:Exit:: =============================================================
+  PopTagsandRegisters;
+
+End;
