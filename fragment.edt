@@ -53,7 +53,9 @@
 :Output:: ===========================================================
 
   OpenOutput("%@('APPDATA');\QuadView\fragment.tex",0,0,0,"%F");
+  WrL("%$('quadview-handout')");
   WrL("%!8");
+  WrL("%$('quadview-preview')");
   WrL("\begin{document}");
   WrL;
   WrL("%!9");

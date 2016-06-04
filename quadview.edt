@@ -1,4 +1,16 @@
 ﻿
 CreateFolders("%@('APPDATA');\QuadView",0);
 
+Assign("quadview-handout", "\PassOptionsToClass{handout}{beamer}%\");
+Assign("quadview-preview", >
+  "\makeatletter%\"+>
+  "\@ifclassloaded{beamer}{}{%\"+>
+  "  \usepackage[active,tightpage]{preview}%\"+>
+  "  \AtBeginDocument{\begin{preview}}%\"+>
+  "  \AtEndDocument{\end{preview}}%\"+>
+  "  \pagestyle{empty}%\"+>
+  "}%\"+>
+  "\makeatother">
+);
+
 SetEventTimer(1, 10, "Exe('%b\Plugins\QuadView\fragment.edt')");
