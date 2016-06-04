@@ -6,6 +6,7 @@ Assign("quadview-preview", >
   "\makeatletter%\"+>
   "\@ifclassloaded{beamer}{}{%\"+>
   "  \usepackage[active,tightpage]{preview}%\"+>
+  "  \setlength{\PreviewBorder}{8pt}%\"+>
   "  \AtBeginDocument{\begin{preview}}%\"+>
   "  \AtEndDocument{\end{preview}}%\"+>
   "  \pagestyle{empty}%\"+>
