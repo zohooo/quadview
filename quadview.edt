@@ -19,6 +19,6 @@ Assign("quadview-preview", >
 Assign("quadview-fragment", "");
 Assign("quadview-fragment-old", "");
 
-SetEventTimer(1, 10, "Exe('%$(|quadview|);\fragment.edt')");
+SetEventTimer(1, 1, "Exe('%$(|quadview|);\fragment.edt')");
 
 Run('"%$(|quadview|);\wlua52.exe" "%$(|quadview|);\quadview.lua"', '%$(|quadview|)');

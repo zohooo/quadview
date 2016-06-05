@@ -261,7 +261,7 @@ end
 
 frame:Connect(ID.TIMER_PREVIEW, wx.wxEVT_TIMER, CompileDocument)
 
-previewTimer:Start(8000);
+previewTimer:Start(1000);
 
 -----------------------------------------------------------
 -- Show main frame and start event loop
