@@ -1,6 +1,8 @@
 ﻿
 CreateFolders("%@('APPDATA');\QuadView",0);
 
+Assign("quadview", "%b\Plugins\QuadView");
+
 Assign("quadview-handout", "\PassOptionsToClass{handout}{beamer}%\");
 Assign("quadview-preview", >
   "\makeatletter%\"+>
@@ -14,7 +16,8 @@ Assign("quadview-preview", >
   "\makeatother">
 );
 
-Assign("quadview", "%b\Plugins\QuadView");
+Assign("quadview-fragment", "");
+Assign("quadview-fragment-old", "");
 
 SetEventTimer(1, 10, "Exe('%$(|quadview|);\fragment.edt')");
 

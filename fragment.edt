@@ -41,6 +41,12 @@
   RestoreWrap;
   SetTracking(1);
 
+:Compare:: ==========================================================
+
+  Assign('quadview-fragment-old', '%$(|quadview-fragment|)');
+  Assign('quadview-fragment', '%!9');
+  IfStr('%$(|quadview-fragment|)', '%$(|quadview-fragment-old|)', '=', 'JMP("Exit")', '');
+
 :Preamble:: =========================================================
 
   FindInString("%!9",!"<\\begin\{document\}",1,1,11);
@@ -59,7 +65,7 @@
   WrL("%$('quadview-preview')");
   WrL("\begin{document}");
   WrL;
-  WrL("%!9");
+  WrL("%$('quadview-fragment')");
   WrL;
   WrL("\end{document}");
   CloseOutput;
