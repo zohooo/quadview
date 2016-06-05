@@ -22,8 +22,10 @@
   SearchReset;
   FindInFiles;
   RestoreFind;
+
   SetTracking(0);
   SetWrap(-1);
+
   FindNext(-4,-1);
   Loop(!|>
     GetFindItem(3,3);>
@@ -32,12 +34,16 @@
     ','Stop;');>
     FindNext(1,-1);|);
   //Prompt("%!l %!4-%!5");
+
+  IfStr('%!4', '', '=', 'JMP("Exit")', ''); // first paragraph
+
   LetReg(9,"");
   Loop(!|>
     IfNum(%!4,%!5,'<=',!'GetLine(3,%!5);InsertByIndex(9,"%!9","%!3%\");LetRegNum(5,%!5-1);'>
     ,'Stop');>
   |);
   //Prompt("%!9");
+
   RestoreWrap;
   SetTracking(1);
 
