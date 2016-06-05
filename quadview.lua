@@ -220,10 +220,28 @@ pngname = datapath .. sep .. "fragment.png"
 program = "xelatex"
 switch = "-interaction=nonstopmode -output-directory=\"" .. datapath .. "\""
 
+modtime = wx.wxDateTime()
+
+function CheckFileTime()
+    local fn = wx.wxFileName(texname)
+    if not fn:FileExists() then return false end
+    local time = fn:GetModificationTime()
+    if time:IsLaterThan(modtime) then
+        modtime = time
+        return true
+    else
+        return false
+    end
+end
+
 function CompileDocument()
     local file = io.input(dirname)
     local dir = io.read("*line")
     io.close(file)
+    if not CheckFileTime() then
+        print(modtime:GetTicks())
+        return
+    end
     local cmd = program .. " " .. switch .. " \"" .. texname .. "\""
     ExecCommand(cmd, dir, PreviewDocument)
 end
