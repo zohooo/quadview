@@ -42,8 +42,83 @@ frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
     if not wx.wxRemoveFile(runname) then
         wx.wxMessageBox("Unable to delete file!", "Error", wx.wxOK + wx.wxCENTRE, frame)
     end
+    SavePosition()
     event:Skip()
 end)
+
+-----------------------------------------------------------
+-- Save and restore main frame position
+-----------------------------------------------------------
+
+function GetConfig()
+    local config = wx.wxFileConfig("QuadView")
+    if config then
+        config:SetRecordDefaults()
+    else
+        print("Failed to load config file!")
+    end
+    return config
+end
+
+function SavePosition()
+    local config = GetConfig()
+    if not config then return end
+
+    config:SetPath("/MainFrame")
+
+    local s    = 0
+    local w, h = frame:GetSizeWH()
+    local x, y = frame:GetPositionXY()
+
+    if frame:IsMaximized() then
+        s = 1
+    elseif frame:IsIconized() then
+        s = 2
+    end
+
+    config:Write("s", s)
+
+    if s == 0 then
+        config:Write("x", x)
+        config:Write("y", y)
+        config:Write("w", w)
+        config:Write("h", h)
+    end
+
+    config:delete() -- always delete the config
+end
+
+function RestorePosition()
+    local config = GetConfig()
+    if not config then return end
+
+    config:SetPath("/MainFrame")
+
+    local _, s = config:Read("s", -1)
+    local _, x = config:Read("x", 0)
+    local _, y = config:Read("y", 0)
+    local _, w = config:Read("w", 0)
+    local _, h = config:Read("h", 0)
+
+    if (s ~= -1) and (s ~= 1) and (s ~= 2) then
+        local clientX, clientY, clientWidth, clientHeight
+        clientX, clientY, clientWidth, clientHeight = wx.wxClientDisplayRect()
+
+        if x < clientX then x = clientX end
+        if y < clientY then y = clientY end
+
+        if w > clientWidth  then w = clientWidth end
+        if h > clientHeight then h = clientHeight end
+
+        frame:SetSize(x, y, w, h)
+    elseif s == 1 then
+        frame:Maximize(true)
+    end
+
+    config:delete() -- always delete the config
+end
+
+RestorePosition()
 
 -----------------------------------------------------------
 -- Resize the preview image
