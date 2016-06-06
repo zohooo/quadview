@@ -1,4 +1,8 @@
 ﻿
+Requires(20110504);
+
+PushTagsandRegisters;
+
 CreateFolders("%@('APPDATA');\QuadView",0);
 
 Assign("quadview", "%b\QuadView");
@@ -19,6 +23,11 @@ Assign("quadview-preview", >
 Assign("quadview-fragment", "");
 Assign("quadview-fragment-old", "");
 
-SetEventTimer(1, 1, "Exe('%$(|quadview|);\fragment.edt')");
+// SetEventTimer macro changed in WinEdt 8.2
+GetVersion(1);
+IfNum(%!1, 8.1, '>=', 'LetRegNum(2,1000)', 'LetRegNum(2,1)');
+SetEventTimer(1, %!2, "Exe('%$(|quadview|);\fragment.edt')");
 
 Run('"%$(|quadview|);\wlua52.exe" "%$(|quadview|);\quadview.lua"', '%$(|quadview|)');
+
+PopTagsandRegisters;
