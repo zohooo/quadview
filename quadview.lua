@@ -235,6 +235,8 @@ function CheckFileTime()
 end
 
 function CompileDocument()
+    local fn = wx.wxFileName(dirname)
+    if not fn:FileExists() then return end
     local file = io.input(dirname)
     local dir = io.read("*line")
     io.close(file)
