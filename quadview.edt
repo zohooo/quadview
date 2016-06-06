@@ -1,7 +1,7 @@
 ﻿
 CreateFolders("%@('APPDATA');\QuadView",0);
 
-Assign("quadview", "%b\Plugins\QuadView");
+Assign("quadview", "%b\QuadView");
 
 Assign("quadview-handout", "\PassOptionsToClass{handout}{beamer}%\");
 Assign("quadview-preview", >
