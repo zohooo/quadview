@@ -15,37 +15,21 @@
 
 :Fragment:: =========================================================
 
-  SaveFind;
-  SetRegEx(1);
-  SetFindStr("<>");
-  SetFindinFilesCurrent(1);
-  SearchReset;
-  FindInFiles;
-  RestoreFind;
-
-  SetTracking(0);
-  SetWrap(-1);
-
-  FindNext(-4,-1);
+  LetReg(9, "%L");
+  LetRegNum(4, %l);
+  LetRegNum(5, %l);
   Loop(!|>
-    GetFindItem(3,3);>
-    IfOK(!'>
-      IfNum(%!3+1,%!l,"<=",!"LetRegNum(4,%!3+1);","LetRegNum(5,%!3+1);Stop;");>
-    ','Stop;');>
-    FindNext(1,-1);|);
-  //Prompt("%!l %!4-%!5");
-
-  IfStr('%!4', '', '=', 'JMP("Exit")', ''); // first paragraph
-
-  LetReg(9,"");
-  Loop(!|>
-    IfNum(%!4,%!5,'<=',!'GetLine(3,%!5);InsertByIndex(9,"%!9","%!3%\");LetRegNum(5,%!5-1);'>
-    ,'Stop');>
+    LetRegNum(4, %!4-1);>
+    IfNum(%!4, 0, '<=', 'Break', '');>
+    GetLine(3, %!4);>
+    IfStr('%!3', '', '=', 'Break', 'InsertByIndex(9, "%!9", "%!3%\", 0);');>
   |);
-  //Prompt("%!9");
-
-  RestoreWrap;
-  SetTracking(1);
+  Loop(!|>
+    LetRegNum(5, %!5+1);>
+    GetLine(3, %!5);>
+    GetLength(6, "%!9");>
+    IfStr('%!3', '', '=', 'Break', 'InsertByIndex(9, "%!9", "%\%!3", %!6);');>
+  |);
 
 :Compare:: ==========================================================
 
