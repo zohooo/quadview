@@ -272,6 +272,51 @@ frame:Connect(ID.TIMER_PREVIEW, wx.wxEVT_TIMER, CompileDocument)
 previewTimer:Start(1000);
 
 -----------------------------------------------------------
+-- The popup menu
+-----------------------------------------------------------
+
+menu = wx.wxMenu()
+
+ID.ENGINE   = NewID()
+ID.PDFLATEX = NewID()
+ID.XELATEX  = NewID()
+ID.LUALATEX = NewID()
+
+menu:Append(ID.ENGINE, "Engine", wx.wxMenu{
+    { ID.PDFLATEX, "&PDFLaTeX", "Use PDFLaTeX", wx.wxITEM_RADIO },
+    { ID.XELATEX,  "&XeLaTeX",  "Use XeLaTeX",  wx.wxITEM_RADIO },
+    { ID.LUALATEX, "&LuaLaTeX", "Use LuaLaTeX", wx.wxITEM_RADIO },
+})
+
+menu:Check(ID.XELATEX, true)
+
+menu:AppendSeparator()
+
+ID.ABOUT = NewID()
+
+menu:Append(ID.ABOUT, "&About", "About QuadView")
+
+frame:Connect(ID.PDFLATEX, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
+    program = "pdflatex"
+end)
+
+frame:Connect(ID.XELATEX, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
+    program = "xelatex"
+end)
+
+frame:Connect(ID.LUALATEX, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
+    program = "lualatex"
+end)
+
+frame:Connect(ID.ABOUT, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
+    wx.wxMessageBox("QuadView" .. " " .. VERSION, "ABOUT")
+end)
+
+frame:Connect(wx.wxEVT_CONTEXT_MENU, function(event)
+    frame:PopupMenu(menu)
+end)
+
+-----------------------------------------------------------
 -- Show main frame and start event loop
 -----------------------------------------------------------
 
