@@ -1,6 +1,8 @@
 
 require("wx")
 
+VERSION = "0.1"
+
 -----------------------------------------------------------
 -- Generate a unique new wxWindowID
 -----------------------------------------------------------
@@ -33,7 +35,7 @@ local file = wx.wxFile()
 file:Create(runname, true)
 file:Close()
 
-frame = wx.wxFrame(wx.NULL, wx.wxID_ANY, "QuadView", wx.wxPoint(656,132),
+frame = wx.wxFrame(wx.NULL, wx.wxID_ANY, "QuadView" .. " " .. VERSION, wx.wxPoint(656,132),
                    wx.wxSize(350, 250), wx.wxDEFAULT_FRAME_STYLE+wx.wxSTAY_ON_TOP)
 
 image = wx.wxImage()
