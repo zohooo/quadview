@@ -39,13 +39,14 @@
 
 :Preamble:: =========================================================
 
-  FindInString("%!9",!"<\\begin\{document\}",1,1,11);
-  IfOK("JMP('Output');");
   GetPreamble("\begin{document}",8);
   IfOK(!'Relax;',!|LetReg(8,>
     !'\documentclass{article}%\'+>
     !'\usepackage{amsmath}%\'+>
   );|);
+
+  FindInString("%!8\begin{document}%\", "%!9", -1, -1, 10);
+  IfOK("JMP('Exit')");
 
 :Output:: ===========================================================
 
