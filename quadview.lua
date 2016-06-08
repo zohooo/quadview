@@ -200,7 +200,7 @@ end
 function ExecCommand(cmd, dir, callback)
     if isRunning then
         print("isRunning")
-        return
+        return true
     else
         print("notRunning")
     end
@@ -230,6 +230,8 @@ function ExecCommand(cmd, dir, callback)
         streamOut = proc and proc:GetOutputStream()
         execTimer:Start(200);
     end
+
+    return false
 end
 
 frame:Connect(ID.TIMER_EXECUTION, wx.wxEVT_TIMER, ReadStream)
@@ -249,6 +251,7 @@ pngname = datapath .. sep .. "fragment.png"
 if not program then program = "xelatex" end
 switch = "-interaction=nonstopmode -output-directory=\"" .. datapath .. "\""
 
+local isPending = false
 modtime = wx.wxDateTime()
 
 function CheckFileTime()
@@ -269,12 +272,12 @@ function CompileDocument()
     local file = io.input(dirname)
     local dir = io.read("*line")
     io.close(file)
-    if not CheckFileTime() then
-        print(modtime:GetTicks())
+    if not CheckFileTime() and not isPending then
+        --print(modtime:GetTicks())
         return
     end
     local cmd = program .. " " .. switch .. " \"" .. texname .. "\""
-    ExecCommand(cmd, dir, PreviewDocument)
+    isPending = ExecCommand(cmd, dir, PreviewDocument)
 end
 
 function PreviewDocument()
