@@ -49,11 +49,12 @@ frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
         wx.wxMessageBox("Unable to delete file!", "Error", wx.wxOK + wx.wxCENTRE, frame)
     end
     SavePosition()
+    SaveEngine()
     event:Skip()
 end)
 
 -----------------------------------------------------------
--- Save and restore main frame position
+-- Save and restore configurations
 -----------------------------------------------------------
 
 function GetConfig()
@@ -125,6 +126,28 @@ function RestorePosition()
 end
 
 RestorePosition()
+
+function SaveEngine()
+    local config = GetConfig()
+    if not config then return end
+
+    config:SetPath("/Engine")
+    config:Write("program", program)
+
+    config:delete() -- always delete the config
+end
+
+function RestoreEngine()
+    local config = GetConfig()
+    if not config then return end
+
+    config:SetPath("/Engine")
+    _, program = config:Read("program", "xelatex")
+
+    config:delete() -- always delete the config
+end
+
+RestoreEngine()
 
 -----------------------------------------------------------
 -- Resize the preview image
@@ -223,7 +246,7 @@ texname = datapath .. sep .. "fragment.tex"
 pdfname = datapath .. sep .. "fragment.pdf"
 pngname = datapath .. sep .. "fragment.png"
 
-program = "xelatex"
+if not program then program = "xelatex" end
 switch = "-interaction=nonstopmode -output-directory=\"" .. datapath .. "\""
 
 modtime = wx.wxDateTime()
@@ -288,7 +311,7 @@ menu:Append(ID.ENGINE, "Engine", wx.wxMenu{
     { ID.LUALATEX, "&LuaLaTeX", "Use LuaLaTeX", wx.wxITEM_RADIO },
 })
 
-menu:Check(ID.XELATEX, true)
+menu:Check(ID[string.upper(program)], true)
 
 menu:AppendSeparator()
 
