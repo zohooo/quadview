@@ -7,6 +7,8 @@
 :Prepare:: ==========================================================
 
   IfisMode("TeX","%!m","","JMP('Exit')");
+  IfisMode("STY","%!m","JMP('Exit')","");
+  IfisMode("AUX","%!m","JMP('Exit')","");
   IfFileExists("%@('APPDATA');\QuadView\running","","JMP('Exit')");
 
   OpenOutput("%@('APPDATA');\QuadView\directory.txt",0,0,0,"%F");
