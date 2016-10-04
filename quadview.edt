@@ -7,7 +7,7 @@
 
   Assign("quadview", "%b\QuadView");
 
-  Assign("quadview-version", "\def\quadview{0.2}%\");
+  Assign("quadview-version", "\def\quadview{0.3}%\");
   Assign("quadview-handout", "\PassOptionsToClass{handout}{beamer}%\");
   Assign("quadview-preview", >
     "\makeatletter%\"+>
