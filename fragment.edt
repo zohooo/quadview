@@ -24,13 +24,13 @@
     LetRegNum(4, %!4-1);>
     IfNum(%!4, 0, '<=', 'Break', '');>
     GetLine(3, %!4);>
-    IfStr('%!3', '', '=', 'Break', 'InsertByIndex(9, !"%!9", !"%!3%\", 0);');>
+    IfStr('%!3', '', '=', 'Break', !'InsertByIndex(9, "%!9", "%!3%\", 0);');>
   |);
   Loop(!|>
     LetRegNum(5, %!5+1);>
     GetLine(3, %!5);>
     GetLength(6, "%!9");>
-    IfStr('%!3', '', '=', 'Break', 'InsertByIndex(9, !"%!9", !"%\%!3", %!6);');>
+    IfStr('%!3', '', '=', 'Break', !'InsertByIndex(9, "%!9", "%\%!3", %!6);');>
   |);
 
 :Compare:: ==========================================================
