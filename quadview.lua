@@ -318,6 +318,12 @@ menu:Check(ID[string.upper(program)], true)
 
 menu:AppendSeparator()
 
+ID.FRAGMENT = NewID()
+
+menu:Append(ID.FRAGMENT, "&Fragment", "Open Fragment Folder")
+
+menu:AppendSeparator()
+
 ID.ABOUT = NewID()
 
 menu:Append(ID.ABOUT, "&About", "About QuadView")
@@ -332,6 +338,10 @@ end)
 
 frame:Connect(ID.LUALATEX, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
     program = "lualatex"
+end)
+
+frame:Connect(ID.FRAGMENT, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
+    wx.wxExecute("explorer "  .. datapath, wx.wxEXEC_ASYNC)
 end)
 
 frame:Connect(ID.ABOUT, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
