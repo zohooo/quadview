@@ -32,6 +32,11 @@ if not wx.wxFileName.DirExists(datapath) and not wx.wxFileName.Mkdir(datapath) t
     return
 end
 
+if not wx.wxFileName.FileExists(cfgname) then
+    wx.wxMessageBox("Make sure you have installed preview package\n"
+        .. "into your miktex or texlive distribution!", "Requirement")
+end
+
 local file = wx.wxFile()
 file:Create(runname, true)
 file:Close()
