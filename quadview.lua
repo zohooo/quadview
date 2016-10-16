@@ -24,6 +24,7 @@ sep = package.config:sub(1,1) -- path separator
 
 mainpath = wx.wxGetCwd()
 datapath = os.getenv("APPDATA") .. sep .. "QuadView"
+cfgname = datapath .. sep .. "quadview.ini"
 runname = datapath .. sep .. "running"
 
 if not wx.wxFileName.DirExists(datapath) and not wx.wxFileName.Mkdir(datapath) then
@@ -58,7 +59,7 @@ end)
 -----------------------------------------------------------
 
 function GetConfig()
-    local config = wx.wxFileConfig("QuadView")
+    local config = wx.wxFileConfig("QuadView", "", cfgname)
     if config then
         config:SetRecordDefaults()
     else
