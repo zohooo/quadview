@@ -55,7 +55,7 @@ frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
         wx.wxMessageBox("Unable to delete file!", "Error", wx.wxOK + wx.wxCENTRE, frame)
     end
     SavePosition()
-    SaveEngine()
+    SaveSettings()
     event:Skip()
 end)
 
@@ -133,27 +133,29 @@ end
 
 RestorePosition()
 
-function SaveEngine()
+function SaveSettings()
     local config = GetConfig()
     if not config then return end
 
-    config:SetPath("/Engine")
-    config:Write("program", program)
+    config:SetPath("/Settings")
+    config:Write("engine", engine)
+    config:Write("resolution", resolution)
 
     config:delete() -- always delete the config
 end
 
-function RestoreEngine()
+function RestoreSettings()
     local config = GetConfig()
     if not config then return end
 
-    config:SetPath("/Engine")
-    _, program = config:Read("program", "xelatex")
+    config:SetPath("/Settings")
+    _, engine = config:Read("engine", "xelatex")
+    _, resolution = config:Read("resolution", 300)
 
     config:delete() -- always delete the config
 end
 
-RestoreEngine()
+RestoreSettings()
 
 -----------------------------------------------------------
 -- Resize the preview image
@@ -254,7 +256,8 @@ texname = datapath .. sep .. "fragment.tex"
 pdfname = datapath .. sep .. "fragment.pdf"
 pngname = datapath .. sep .. "fragment.png"
 
-if not program then program = "xelatex" end
+if not engine then engine = "xelatex" end
+if not resolution then resolution = 300 end
 switch = "-interaction=nonstopmode -output-directory=\"" .. datapath .. "\""
 
 local isPending = false
@@ -282,13 +285,13 @@ function CompileDocument()
         --print(modtime:GetTicks())
         return
     end
-    local cmd = program .. " " .. switch .. " \"" .. texname .. "\""
+    local cmd = engine .. " " .. switch .. " \"" .. texname .. "\""
     wx.wxRemoveFile(pdfname)
     isPending = ExecCommand(cmd, dir, PreviewDocument)
 end
 
 function PreviewDocument()
-    local cmd = "mudraw -r 300 -o " .. pngname .. " " .. pdfname .. " 1"
+    local cmd = "mudraw -r " .. tostring(resolution) .. " -o " .. pngname .. " " .. pdfname .. " 1"
     wx.wxRemoveFile(pngname)
     if wx.wxFileName.FileExists(pdfname) then
         ExecCommand(cmd, mainpath, UpdateBitmap)
@@ -335,7 +338,22 @@ menu:Append(ID.ENGINE, "Engine", wx.wxMenu{
     { ID.LUALATEX, "&LuaLaTeX", "Use LuaLaTeX", wx.wxITEM_RADIO },
 })
 
-menu:Check(ID[string.upper(program)], true)
+menu:Check(ID[string.upper(engine)], true)
+
+menu:AppendSeparator()
+
+ID.RESOLUTION = NewID()
+ID.R600       = NewID()
+ID.R450       = NewID()
+ID.R300       = NewID()
+
+menu:Append(ID.RESOLUTION, "Resolution", wx.wxMenu{
+    { ID.R600, "&High",   "High Resolution",   wx.wxITEM_RADIO },
+    { ID.R450, "&Medium", "Medium Resolution", wx.wxITEM_RADIO },
+    { ID.R300, "&Low",    "Low Resolution",    wx.wxITEM_RADIO },
+})
+
+menu:Check(ID["R" .. tostring(resolution)], true)
 
 menu:AppendSeparator()
 
@@ -350,15 +368,27 @@ ID.ABOUT = NewID()
 menu:Append(ID.ABOUT, "&About", "About QuadView")
 
 frame:Connect(ID.PDFLATEX, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
-    program = "pdflatex"
+    engine = "pdflatex"
 end)
 
 frame:Connect(ID.XELATEX, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
-    program = "xelatex"
+    engine = "xelatex"
 end)
 
 frame:Connect(ID.LUALATEX, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
-    program = "lualatex"
+    engine = "lualatex"
+end)
+
+frame:Connect(ID.R600, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
+    resolution = 600
+end)
+
+frame:Connect(ID.R450, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
+    resolution = 450
+end)
+
+frame:Connect(ID.R300, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
+    resolution = 300
 end)
 
 frame:Connect(ID.FRAGMENT, wx.wxEVT_COMMAND_MENU_SELECTED, function(event)
