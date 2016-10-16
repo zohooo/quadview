@@ -283,19 +283,34 @@ function CompileDocument()
         return
     end
     local cmd = program .. " " .. switch .. " \"" .. texname .. "\""
+    wx.wxRemoveFile(pdfname)
     isPending = ExecCommand(cmd, dir, PreviewDocument)
 end
 
 function PreviewDocument()
     local cmd = "mudraw -r 300 -o " .. pngname .. " " .. pdfname .. " 1"
-    ExecCommand(cmd, mainpath, UpdateBitmap)
+    wx.wxRemoveFile(pngname)
+    if wx.wxFileName.FileExists(pdfname) then
+        ExecCommand(cmd, mainpath, UpdateBitmap)
+    else
+        UpdateBitmap()
+    end
 end
 
 function UpdateBitmap()
-    if (image:LoadFile(pngname, wx.wxBITMAP_TYPE_PNG)) then
-        ResizeControl()
+    if wx.wxFileName.FileExists(pngname) then
+        image:LoadFile(pngname, wx.wxBITMAP_TYPE_PNG)
     else
-        --wx.wxMessageBox("Unable to load image!", "Error", wx.wxOK + wx.wxCENTRE, frame)
+        ClearImage()
+    end
+    ResizeControl()
+end
+
+function ClearImage()
+    for x = 1, image:GetWidth() do
+        for y = 1, image:GetHeight() do
+            image:SetRGB(x, y, 171, 171, 171)
+        end
     end
 end
 
