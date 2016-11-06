@@ -303,10 +303,22 @@ end
 function UpdateBitmap()
     if wx.wxFileName.FileExists(pngname) then
         image:LoadFile(pngname, wx.wxBITMAP_TYPE_PNG)
+        if not IsEmptyImage() then
+            ResizeControl()
+        end
     else
         ClearImage()
+        ResizeControl()
     end
-    ResizeControl()
+end
+
+function IsEmptyImage()
+    local s = image:GetData()
+    if string.match(s, "^\255+$") then
+        return true
+    else
+        return false
+    end
 end
 
 function ClearImage()
