@@ -48,6 +48,9 @@ image = wx.wxImage()
 bitmap = wx.wxBitmap()
 preview = wx.wxStaticBitmap(frame, wx.wxID_ANY)
 
+statusbar = frame:CreateStatusBar()
+frame:SetStatusText("Ready")
+
 frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
     image:delete()
     bitmap:delete()
@@ -161,6 +164,9 @@ RestoreSettings()
 -- Resize the preview image
 -----------------------------------------------------------
 
+ID.TIMER_RESIZE = NewID()
+local sizeTimer = wx.wxTimer(frame, ID.TIMER_RESIZE)
+
 function ResizeControl()
     local size = frame:GetSize()
     local w, h = size:GetWidth(), size:GetHeight()
@@ -180,9 +186,16 @@ function ResizeControl()
 end
 
 frame:Connect(wx.wxEVT_SIZE, function(event)
-    ResizeControl()
+    sizeTimer:Start(100, true)
     event:Skip()
 end)
+
+function TimerResize()
+    ResizeControl()
+    sizeTimer:Stop()
+end
+
+frame:Connect(ID.TIMER_RESIZE, wx.wxEVT_TIMER, TimerResize)
 
 -----------------------------------------------------------
 -- Execute commands asynchronously
