@@ -49,7 +49,7 @@ bitmap = wx.wxBitmap()
 preview = wx.wxStaticBitmap(frame, wx.wxID_ANY)
 
 statusbar = frame:CreateStatusBar()
-frame:SetStatusText("Ready")
+frame:SetStatusText(" Ready")
 
 frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
     image:delete()
@@ -304,6 +304,7 @@ function CompileDocument()
 end
 
 function PreviewDocument()
+    LocateError()
     local cmd = "mudraw -r " .. tostring(resolution) .. " -o " .. pngname .. " " .. pdfname .. " 1"
     wx.wxRemoveFile(pngname)
     if wx.wxFileName.FileExists(pdfname) then
@@ -345,6 +346,33 @@ end
 frame:Connect(ID.TIMER_PREVIEW, wx.wxEVT_TIMER, CompileDocument)
 
 previewTimer:Start(1000);
+
+-----------------------------------------------------------
+-- Locate first error in log file
+-----------------------------------------------------------
+
+logname = datapath .. sep .. "fragment.log"
+
+function LocateError()
+    local fn = wx.wxFileName(logname)
+    if not fn:FileExists() then return end
+    local file = io.input(logname)
+    local text = io.read("*all")
+    io.close(file)
+    local _, _, e1, e2, e3, e4 = string.find(text, "\n! (.-)\nl%.(%d+) (.-)\n(.-)\n")
+    if e1 then
+        msg = string.gsub(e1, "\n.*", "")
+        if msg == "Undefined control sequence." then
+            _, _, cs = string.find(e3, "(\\%a+)$")
+            if cs then
+                msg = string.sub(msg, 1, -2) .. " " .. cs .. "."
+            end
+        end
+        frame:SetStatusText(" ! " .. msg)
+    else
+        frame:SetStatusText(" Success.")
+    end
+end
 
 -----------------------------------------------------------
 -- The popup menu
