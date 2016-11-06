@@ -360,6 +360,9 @@ function LocateError()
     local text = io.read("*all")
     io.close(file)
     local _, _, e1, e2, e3, e4 = string.find(text, "\n! (.-)\nl%.(%d+) (.-)\n(.-)\n")
+    if not e1 then
+        _, _, e1 = string.find(text, "\nRunaway argument?.-\n! (.-)\n")
+    end
     if e1 then
         msg = string.gsub(e1, "\n.*", "")
         if msg == "Undefined control sequence." then
