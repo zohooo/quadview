@@ -1,7 +1,7 @@
 
 require("wx")
 
-VERSION = "0.4"
+VERSION = "0.5"
 
 -----------------------------------------------------------
 -- Generate a unique new wxWindowID
