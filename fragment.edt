@@ -43,8 +43,8 @@
 
   GetPreamble("\begin{document}",8);
   IfOK(!'Relax;',!|LetReg(8,>
-    !'\documentclass{article}%\'+>
-    !'\usepackage{amsmath}%\'+>
+    '\documentclass{article}%\'+>
+    '\usepackage{amsmath}%\'>
   );|);
 
   FindInString("%!8\begin{document}%\", "%!9", -1, -1, 10);
