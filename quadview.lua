@@ -267,7 +267,7 @@ local previewTimer = wx.wxTimer(frame, ID.TIMER_PREVIEW)
 dirname = datapath .. sep .. "directory.txt"
 texname = datapath .. sep .. "fragment.tex"
 pdfname = datapath .. sep .. "fragment.pdf"
-pngname = datapath .. sep .. "fragment.png"
+pngname = datapath .. sep .. "fragment-%d.png"
 
 if not engine then engine = "xelatex" end
 if not resolution then resolution = 300 end
@@ -305,8 +305,8 @@ end
 
 function PreviewDocument()
     LocateError()
-    local cmd = "mudraw -r " .. tostring(resolution) .. " -o " .. pngname .. " " .. pdfname .. " 1"
-    wx.wxRemoveFile(pngname)
+    local cmd = "mudraw -r " .. tostring(resolution) .. " -o " .. pngname .. " " .. pdfname
+    RemoveImage()
     if wx.wxFileName.FileExists(pdfname) then
         ExecCommand(cmd, mainpath, UpdateBitmap)
     else
@@ -315,14 +315,42 @@ function PreviewDocument()
 end
 
 function UpdateBitmap()
-    if wx.wxFileName.FileExists(pngname) then
-        image:LoadFile(pngname, wx.wxBITMAP_TYPE_PNG)
+    local png = FindImage()
+    if png then
+        image:LoadFile(png, wx.wxBITMAP_TYPE_PNG)
         if not IsEmptyImage() then
             ResizeControl()
         end
     else
         ClearImage()
         ResizeControl()
+    end
+end
+
+local page, total = 1, 1
+
+function FindImage()
+    local png = ""
+    page = 1
+    while true do
+        png = string.format(pngname, page)
+        if wx.wxFileName.FileExists(png) then
+            page = page + 1
+        else break end
+    end
+    page = page - 1
+    total = page
+    if page > 0 then
+        return string.format(pngname, page)
+    else return nil end
+end
+
+function RemoveImage()
+    local i = 1
+    while true do
+        if wx.wxRemoveFile(string.format(pngname, i)) then
+            i = i + 1
+        else break end
     end
 end
 
