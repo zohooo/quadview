@@ -153,7 +153,7 @@ function RestoreSettings()
 
     config:SetPath("/Settings")
     _, engine = config:Read("engine", "xelatex")
-    _, resolution = config:Read("resolution", 300)
+    _, resolution = config:Read("resolution", 450)
 
     config:delete() -- always delete the config
 end
@@ -270,7 +270,7 @@ pdfname = datapath .. sep .. "fragment.pdf"
 pngname = datapath .. sep .. "fragment-%d.png"
 
 if not engine then engine = "xelatex" end
-if not resolution then resolution = 300 end
+if not resolution then resolution = 450 end
 switch = "-interaction=nonstopmode -output-directory=\"" .. datapath .. "\""
 
 local isPending = false
