@@ -327,6 +327,13 @@ function UpdateBitmap()
     end
 end
 
+function NextBitmap()
+    local png = NextImage()
+    if png and image:LoadFile(png, wx.wxBITMAP_TYPE_PNG) then
+        ResizeControl()
+    end
+end
+
 local page, total = 1, 1
 
 function FindImage()
@@ -342,6 +349,15 @@ function FindImage()
     total = page
     if page > 0 then
         return string.format(pngname, page)
+    else return nil end
+end
+
+function NextImage()
+    if total == 1 then do return nil end end
+    if page == total then page = 1 else page = page + 1 end
+    local png = string.format(pngname, page)
+    if wx.wxFileName.FileExists(png) then
+        return png
     else return nil end
 end
 
@@ -374,6 +390,8 @@ end
 frame:Connect(ID.TIMER_PREVIEW, wx.wxEVT_TIMER, CompileDocument)
 
 previewTimer:Start(1000);
+
+preview:Connect(wx.wxEVT_LEFT_DOWN, NextBitmap)
 
 -----------------------------------------------------------
 -- Locate first error in log file
