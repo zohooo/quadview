@@ -305,7 +305,7 @@ end
 
 function PreviewDocument()
     LocateError()
-    local cmd = "mudraw -r " .. tostring(resolution) .. " -o " .. pngname .. " " .. pdfname
+    local cmd = "mudraw -r " .. tostring(resolution) .. " -o " .. "\"" .. pngname .. "\" \"" .. pdfname .. "\""
     RemoveImage()
     if wx.wxFileName.FileExists(pdfname) then
         ExecCommand(cmd, mainpath, UpdateBitmap)
