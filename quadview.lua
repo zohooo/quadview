@@ -176,6 +176,11 @@ function ResizeControl()
     if iw == 0 then iw = 320 end
     if ih == 0 then ih = 240 end
     local nh =  cw * ih / iw
+
+    if frame:IsMaximized() and nh > ch then
+        nh = ch
+    end
+
     bitmap = wx.wxBitmap(image:Scale(cw, nh, wx.wxIMAGE_QUALITY_HIGH))
     preview:SetBitmap(bitmap)
     preview:SetSize(0, 0, cw, ch)
