@@ -206,7 +206,7 @@ frame:Connect(ID.TIMER_RESIZE, wx.wxEVT_TIMER, TimerResize)
 -- Execute commands asynchronously
 -----------------------------------------------------------
 
-local proc, streamIn, streamErr, streamOut
+local proc, pid, callback, streamIn, streamErr, streamOut
 local inRunning = false
 
 ID.TIMER_EXECUTION = NewID()
@@ -223,7 +223,15 @@ function ReadStream()
     end
 end
 
-function ExecCommand(cmd, dir, callback)
+frame:Connect(wx.wxEVT_END_PROCESS, function(event)
+    execTimer:Stop();
+    ReadStream()
+    proc = nil
+    isRunning = false
+    if callback then callback() end
+end)
+
+function ExecCommand(cmd, dir, cb)
     if isRunning then
         print("isRunning")
         return true
@@ -231,21 +239,15 @@ function ExecCommand(cmd, dir, callback)
         print("notRunning")
     end
 
-    proc = wx.wxProcess()
+    callback = cb
+    proc = wx.wxProcess(frame)
     proc:Redirect()
-    proc:Connect(wx.wxEVT_END_PROCESS, function(event)
-        execTimer:Stop();
-        ReadStream()
-        proc = nil
-        isRunning = false
-        callback()
-    end)
 
     local cwd = wx.wxGetCwd()
     wx.wxSetWorkingDirectory(dir)
     print(cmd)
     isRunning = true
-    local pid = wx.wxExecute(cmd, wx.wxEXEC_ASYNC, proc)
+    pid = wx.wxExecute(cmd, wx.wxEXEC_ASYNC, proc)
     wx.wxSetWorkingDirectory(cwd)
 
     if pid == -1 then
