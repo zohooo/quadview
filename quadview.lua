@@ -51,17 +51,6 @@ preview = wx.wxStaticBitmap(frame, wx.wxID_ANY)
 statusbar = frame:CreateStatusBar()
 frame:SetStatusText(" Ready")
 
-frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
-    image:delete()
-    bitmap:delete()
-    if not wx.wxRemoveFile(runname) then
-        wx.wxMessageBox("Unable to delete file!", "Error", wx.wxOK + wx.wxCENTRE, frame)
-    end
-    SavePosition()
-    SaveSettings()
-    event:Skip()
-end)
-
 -----------------------------------------------------------
 -- Save and restore configurations
 -----------------------------------------------------------
@@ -226,7 +215,6 @@ end
 frame:Connect(wx.wxEVT_END_PROCESS, function(event)
     execTimer:Stop();
     ReadStream()
-    proc = nil
     isRunning = false
     if callback then callback() end
 end)
@@ -515,6 +503,23 @@ end)
 -----------------------------------------------------------
 -- Show main frame and start event loop
 -----------------------------------------------------------
+
+frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
+    image:delete()
+    bitmap:delete()
+    execTimer:Stop()
+    if proc then
+        proc:Detach()
+        proc = nil
+        collectgarbage("collect")
+    end
+    if not wx.wxRemoveFile(runname) then
+        wx.wxMessageBox("Unable to delete file!", "Error", wx.wxOK + wx.wxCENTRE, frame)
+    end
+    SavePosition()
+    SaveSettings()
+    event:Skip()
+end)
 
 frame:Show(true)
 
