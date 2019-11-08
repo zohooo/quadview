@@ -14,7 +14,18 @@
     "\@ifclassloaded{beamer}{}{%\"+>
     "  \usepackage[active,tightpage]{preview}%\"+>
     "  \setlength{\PreviewBorder}{8pt}%\"+>
-    "  \AtBeginDocument{\begin{preview}}%\"+>
+    "  \AtBeginDocument{%%%\"+>
+    "    \edef\quadview@parindent{\the\parindent}%%%\"+>
+    "    \edef\quadview@baselineskip{\the\baselineskip}%%%\"+>
+    "    \edef\quadview@lineskiplimit{\the\lineskiplimit}%%%\"+>
+    "    \edef\quadview@lineskip{\the\lineskip}%%%\"+>
+    "    \begin{preview}%\"+>
+    "    \parindent\quadview@parindent\relax%\"+>
+    "    \baselineskip\quadview@baselineskip\relax%\"+>
+    "    \lineskiplimit\quadview@lineskiplimit\relax%\"+>
+    "    \lineskip\quadview@lineskip\relax%\"+>
+    "    \ignorespaces%\"+>
+    "  }%\"+>
     "  \AtEndDocument{\end{preview}}%\"+>
     "  \pagestyle{empty}%\"+>
     "}%\"+>
